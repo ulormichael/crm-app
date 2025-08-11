@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Inter font import */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+body { font-family: 'Inter', sans-serif; }
+.animate-underline { animation: expandUnderline 0.3s forwards; }
+@keyframes expandUnderline { from { transform: scaleX(0); } to { transform: scaleX(1); } }
