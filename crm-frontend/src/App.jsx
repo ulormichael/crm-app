@@ -8,6 +8,7 @@ import SignupPage from './pages/Signup';
 import DashboardPage from './pages/Dashboard';
 import ViewProfilePage from './pages/ViewProfile';
 import EditProfilePage from './pages/EditProfile';
+import Footer from "./components/Footer";
 
 const MainApp = () => {
   const { currentPage } = usePage();
@@ -48,6 +49,7 @@ const MainApp = () => {
       </style>
       <Navbar />
       {renderPage()}
+      <Footer/>
     </div>
   );
 };

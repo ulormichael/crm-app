@@ -1,6 +1,7 @@
 import React from 'react';
 import { usePage } from '../context/PageContext';
 import Button from '../components/Button';
+import Footer from '../components/Footer';
 
 const HomePage = () => {
   const { setCurrentPage } = usePage();
