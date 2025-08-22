@@ -1,17 +1,17 @@
 import React, { useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
 import { usePage } from '../context/PageContext';
 import Button from '../components/Button';
 
+// View Profile Page
 const ViewProfilePage = () => {
   const { selectedItem, setCurrentPage, setSelectedItem } = usePage();
 
-  useEffect(() => {
-    if (!selectedItem) {
-      setCurrentPage('dashboard');
-    }
-  }, [selectedItem, setCurrentPage]);
-
   if (!selectedItem) {
+    // If no item is selected, redirect back to dashboard
+    useEffect(() => {
+      setCurrentPage('dashboard');
+    }, [setCurrentPage]);
     return null;
   }
 
@@ -42,5 +42,3 @@ const ViewProfilePage = () => {
 };
 
 export default ViewProfilePage;
-
-// ---

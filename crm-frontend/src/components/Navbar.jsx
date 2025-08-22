@@ -3,27 +3,29 @@ import { useAuth } from '../context/AuthContext';
 import { usePage } from '../context/PageContext';
 import logo from '../assets/images/crm-logo.png'; 
 
-const NavLink = ({ to, children }) => {
-  const { currentPage, setCurrentPage } = usePage();
-  const isActive = currentPage === to;
-
-  return (
-    <button
-      onClick={() => setCurrentPage(to)}
-      className={`relative text-white font-medium text-lg py-1 px-2 rounded-md transition duration-300 ease-in-out
-        ${isActive ? 'bg-blue-700 bg-opacity-70' : 'hover:bg-blue-500 hover:bg-opacity-50'}`}
-    >
-      {children}
-      {isActive && (
-        <span className="absolute bottom-0 left-0 w-full h-0.5 bg-white transform scale-x-0 origin-left animate-underline"></span>
-      )}
-    </button>
-  );
-};
-
+// Navigation Bar
 const Navbar = () => {
   const { user, logout } = useAuth();
-  const { currentPage } = usePage();
+  const { currentPage, setCurrentPage } = usePage(); // Destructure from usePage here
+
+  // Custom NavLink component for routing (defined inside Navbar for simplicity in single file)
+  const NavLink = ({ to, children }) => {
+    const isActive = currentPage === to; // Use currentPage from Navbar's scope
+
+    return (
+      <button
+        onClick={() => setCurrentPage(to)}
+        className={`relative text-white font-medium text-lg py-1 px-2 rounded-md transition duration-300 ease-in-out
+          ${isActive ? 'bg-blue-700 bg-opacity-70' : 'hover:bg-blue-500 hover:bg-opacity-50'}`}
+      >
+        {children}
+        {isActive && (
+          <span className="absolute bottom-0 left-0 w-full h-0.5 bg-white transform scale-x-0 origin-left animate-underline"></span>
+        )}
+      </button>
+    );
+  };
+
 
   return (
     <nav className="bg-gradient-to-r from-blue-600 to-indigo-700 p-4 shadow-lg">
@@ -38,6 +40,7 @@ const Navbar = () => {
           {user ? (
             <>
               <NavLink to="dashboard">Dashboard</NavLink>
+              <NavLink to="about">About</NavLink>
               <button
                 onClick={logout}
                 className="text-white hover:text-blue-200 transition duration-300 ease-in-out font-medium"
@@ -46,7 +49,10 @@ const Navbar = () => {
               </button>
             </>
           ) : (
-            <NavLink to="login">Login</NavLink>
+            <>
+              <NavLink to="login">Login</NavLink>
+              <NavLink to="about">About</NavLink>
+            </>
           )}
         </div>
       </div>

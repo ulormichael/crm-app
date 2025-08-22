@@ -1,10 +1,12 @@
 import React, { createContext, useContext, useState } from 'react';
 
+// Auth Context
 const AuthContext = createContext(null);
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
+  // Simulate login
   const login = async (username, password) => {
     try {
       const response = await fetch('http://localhost:3001/api/login', {
@@ -25,6 +27,7 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  // Simulate signup
   const signup = async (username, password) => {
     try {
       const response = await fetch('http://localhost:3001/api/signup', {
@@ -45,6 +48,7 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  // Simulate logout
   const logout = () => {
     setUser(null);
   };
@@ -59,5 +63,4 @@ const AuthProvider = ({ children }) => {
 const useAuth = () => useContext(AuthContext);
 
 export { AuthProvider, useAuth };
-
-// ---
+export default AuthContext;

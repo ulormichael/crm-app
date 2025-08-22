@@ -1,15 +1,20 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { usePage } from '../context/PageContext';
+import ConfirmationModal from '../components/ConfirmationModal';
+import Button from '../components/Button';
 import MetricCard from '../components/MetricCard';
 
+// Dashboard Page
 const DashboardPage = () => {
   const { user } = useAuth();
-  const { setCurrentPage, setSelectedItem, crmData, isLoading } = usePage();
+  const { setCurrentPage, setSelectedItem, crmData, deleteCrmItem } = usePage();
+  const [showModal, setShowModal] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
 
   useEffect(() => {
     if (!user) {
-      setCurrentPage('login');
+      setCurrentPage('auth');
     }
   }, [user, setCurrentPage]);
 
@@ -27,14 +32,24 @@ const DashboardPage = () => {
     setCurrentPage('editProfile');
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <h2 className="text-2xl font-semibold text-gray-700">Loading CRM data...</h2>
-      </div>
-    );
-  }
+  const handleDelete = (itemId) => {
+    setItemToDelete(itemId);
+    setShowModal(true);
+  };
 
+  const confirmDelete = () => {
+    deleteCrmItem(itemToDelete);
+    setShowModal(false);
+    setItemToDelete(null);
+  };
+
+  const cancelDelete = () => {
+    setShowModal(false);
+    setItemToDelete(null);
+  };
+
+
+  // Calculate metrics
   const totalLeads = crmData.filter(item => item.type === 'Lead').length;
   const totalCustomers = crmData.filter(item => item.type === 'Customer').length;
   const newLeadsToday = crmData.filter(item => item.type === 'Lead' && item.status === 'New').length;
@@ -42,9 +57,14 @@ const DashboardPage = () => {
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="container mx-auto bg-white p-8 rounded-2xl shadow-xl">
-        <h2 className="text-4xl font-extrabold text-gray-800 mb-8 text-center font-inter">
-          CRM Dashboard
-        </h2>
+        <div className="flex justify-between items-center mb-8">
+          <h2 className="text-4xl font-extrabold text-gray-800 font-inter">
+            CRM Dashboard
+          </h2>
+          <Button onClick={() => setCurrentPage('addLeadOrCustomer')} primary>
+            Add New Item
+          </Button>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           <MetricCard title="Total Leads" value={totalLeads} icon="📊" color="bg-blue-100 text-blue-800" />
@@ -97,10 +117,10 @@ const DashboardPage = () => {
                       {item.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium flex items-center space-x-2">
                     <button
                       onClick={() => handleView(item)}
-                      className="text-blue-600 hover:text-blue-900 mr-4 transition duration-150 ease-in-out"
+                      className="text-blue-600 hover:text-blue-900 transition duration-150 ease-in-out"
                     >
                       View
                     </button>
@@ -110,6 +130,12 @@ const DashboardPage = () => {
                     >
                       Edit
                     </button>
+                    <button
+                      onClick={() => handleDelete(item.id)}
+                      className="text-red-600 hover:text-red-900 transition duration-150 ease-in-out"
+                    >
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -117,10 +143,15 @@ const DashboardPage = () => {
           </table>
         </div>
       </div>
+      {showModal && (
+        <ConfirmationModal
+          message="Are you sure you want to delete this item?"
+          onConfirm={confirmDelete}
+          onCancel={cancelDelete}
+        />
+      )}
     </div>
   );
 };
 
 export default DashboardPage;
-
-// ---

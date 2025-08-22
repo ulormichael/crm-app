@@ -1,20 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from "../context/AuthContext";
+// Page to add a new CRM item
+
+import React, { useState } from 'react';
 import { usePage } from '../context/PageContext';
 import Button from '../components/Button';
 
-// Edit Profile Page
-const EditProfilePage = () => {
-  const { selectedItem, setCurrentPage, setSelectedItem, updateCrmData } = usePage();
-  const [formData, setFormData] = useState(selectedItem || {});
-
-  useEffect(() => {
-    if (!selectedItem) {
-      setCurrentPage('dashboard');
-    } else {
-      setFormData(selectedItem);
-    }
-  }, [selectedItem, setCurrentPage]);
+// Page to add a new CRM item
+const AddLeadOrCustomerPage = () => {
+  const { setCurrentPage, addCrmItem } = usePage();
+  const [formData, setFormData] = useState({
+    type: 'Lead',
+    name: '',
+    email: '',
+    status: 'New'
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,22 +21,33 @@ const EditProfilePage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    updateCrmData(formData); // Update the data in the main state
-    setSelectedItem(null); // Clear selected item
-    setCurrentPage('dashboard'); // Go back to dashboard
+    addCrmItem(formData);
+    setCurrentPage('dashboard');
   };
-
-  if (!selectedItem) {
-    return null; // Or a loading spinner
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       <div className="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md transform transition-all duration-500 hover:scale-105">
         <h2 className="text-4xl font-extrabold text-gray-800 mb-8 text-center font-inter">
-          Edit {selectedItem.type} Profile
+          Add New Lead or Customer
         </h2>
         <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label htmlFor="type" className="block text-gray-700 text-sm font-semibold mb-2">
+              Type
+            </label>
+            <select
+              id="type"
+              name="type"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+              value={formData.type}
+              onChange={handleChange}
+              required
+            >
+              <option value="Lead">Lead</option>
+              <option value="Customer">Customer</option>
+            </select>
+          </div>
           <div>
             <label htmlFor="name" className="block text-gray-700 text-sm font-semibold mb-2">
               Name
@@ -48,7 +57,7 @@ const EditProfilePage = () => {
               id="name"
               name="name"
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
-              value={formData.name || ''}
+              value={formData.name}
               onChange={handleChange}
               required
             />
@@ -62,35 +71,16 @@ const EditProfilePage = () => {
               id="email"
               name="email"
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
-              value={formData.email || ''}
+              value={formData.email}
               onChange={handleChange}
               required
             />
           </div>
-          <div>
-            <label htmlFor="status" className="block text-gray-700 text-sm font-semibold mb-2">
-              Status
-            </label>
-            <select
-              id="status"
-              name="status"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
-              value={formData.status || ''}
-              onChange={handleChange}
-              required
-            >
-              <option value="New">New</option>
-              <option value="Contacted">Contacted</option>
-              <option value="Qualified">Qualified</option>
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-            </select>
-          </div>
           <div className="flex justify-center space-x-4 mt-8">
             <Button type="submit" primary>
-              Save Changes
+              Add Item
             </Button>
-            <Button onClick={() => { setCurrentPage('dashboard'); setSelectedItem(null); }}>
+            <Button onClick={() => setCurrentPage('dashboard')}>
               Cancel
             </Button>
           </div>
@@ -100,4 +90,4 @@ const EditProfilePage = () => {
   );
 };
 
-export default EditProfilePage;
+export default AddLeadOrCustomerPage;
